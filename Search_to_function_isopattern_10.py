@@ -169,7 +169,7 @@ def pattern_score(pattern_tbl: np.array):
                 _res = abs(sub[:,1].sum())
                 _accordance *= 1-_res
 
-    #print('Score', _accordance * 100)
+    return(round(_accordance * 100, 0))
 
 # SAVE PATTERN
 def SaveOutput(output_list, input_filepath, Diff):
