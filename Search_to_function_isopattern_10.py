@@ -1,3 +1,4 @@
+from mmap import ACCESS_COPY
 from Compound_class import Compound
 from pathlib import Path
 from scipy import optimize
@@ -148,10 +149,10 @@ def pattern_score(pattern_tbl: np.array):
         _accordance = 0
     else:
         _accordance = 1
-        pattern_tbl = pattern_tbl[1:,:]      
-        pattern_tbl[:, 1] = pattern_tbl[:, 1]*(-1)
-        mz_list = pattern_tbl[:, 0].tolist() + pattern_tbl[:, 2].tolist()
-        i_list = pattern_tbl[:, 1].tolist() + pattern_tbl[:, 3].tolist()
+        _pattern_tbl = np.copy(pattern_tbl[1:,:])
+        _pattern_tbl[:, 1] = _pattern_tbl[:, 1]*(-1)
+        mz_list = _pattern_tbl[:, 0].tolist() + _pattern_tbl[:, 2].tolist()
+        i_list = _pattern_tbl[:, 1].tolist() + _pattern_tbl[:, 3].tolist()
 
         aray = np.column_stack((mz_list,i_list))
         aray = aray[~np.all(aray == 0, axis=1)]
@@ -172,7 +173,7 @@ def pattern_score(pattern_tbl: np.array):
 
 # SAVE PATTERN
 def SaveOutput(output_list, input_filepath, Diff):
-    colnames = ['PM', 'm/z(teorico)', 'm/z(trovato)', Diff, 'Intens. Ass.', 'Fromula Bruta', 'Addotto', 'Accordo', 'Picchi']
+    colnames = ['PM', 'm/z(teorico)', 'm/z(trovato)', Diff, 'Intens. Ass.', 'Fromula Bruta', 'Addotto', 'Accordo', 'Score', 'Picchi']
     output_df = pd.DataFrame.from_records(output_list, columns=colnames)
     
     filename = Path(input_filepath).stem
@@ -229,15 +230,13 @@ def search_peak(spectra_path: str, database_path: str, adduct_list: list, charge
                 if find != None:
                     #print(spectra[find[0], 0])
                     if Comp.compound not in Iso_dict:
-                        Iso_dict[Comp.compound] = Patter_Calculator(Comp.compound, Comp.charge, .0001, .0001)
+                        Iso_dict[Comp.compound] = Patter_Calculator(Comp.compound, Comp.charge, .0005, .01)
                     pattern_t = Iso_dict[Comp.compound]
                     # Find the isotopic pattern
-                    accordance, pattern_tbl, findedrate = find_pattern(pattern_t, spectra, search_property[1], search_property[0])
-                    #                 PM     m/z(teorico)   m/z(trovato)          Diff           ntens. Ass.        Formula Bruta  Addotto   Accordo   Picchi
-                    
-                    pattern_score(pattern_tbl)
-                    output.append([Comp.mass, Comp.MoC, float(spectra[find[0], 0]), find[1], float(spectra[find[0], 1]), Comp.mol, Comp.label, accordance, findedrate])
-                    #print(Comp.mass, Comp.MoC, float(spectra[find[0], 0]), find[1], float(spectra[find[0], 1]), Comp.mol, Comp.label, accordance, findedrate)
+                    accordance, pattern_tbl, findedrate = find_pattern(pattern_t, spectra, search_property[1], search_property[0])                    
+                    score = pattern_score(pattern_tbl)
+                    #                 PM     m/z(teorico)    m/z(trovato)            Diff         intens. Ass.        Formula Bruta  Addotto     Accordo   Score    Picchi
+                    output.append([Comp.mass, Comp.MoC, float(spectra[find[0], 0]), find[1], float(spectra[find[0], 1]), Comp.mol, Comp.label, accordance, score, findedrate])
                 else:
                     pass
                     
@@ -250,11 +249,9 @@ def search_peak(spectra_path: str, database_path: str, adduct_list: list, charge
                     pattern_t = Iso_dict[Comp.compound]
                     # Find the isotopic pattern
                     accordance, pattern_tbl, findedrate = find_pattern(pattern_t, spectra, search_property[1], search_property[0])
-
-                    #                   PM     m/z(teorico)    m/z(trovato)             Diff         intens. Ass.       Formula Bruta  Addotto     Accordo     Picchi
-                    print('Accordance', accordance)
-                    output.append([Comp.mass, Comp.MoC, float(spectra[find[0], 0]), find[1], float(spectra[find[0], 1]), Comp.mol, Comp.label, accordance, findedrate])
-                    #print(Comp.mass, Comp.MoC, float(spectra[find[0], 0]), find[1], float(spectra[find[0], 1]), Comp.mol, Comp.label, accordance, findedrate)
+                    score = pattern_score(pattern_tbl)
+                    #                 PM     m/z(teorico)    m/z(trovato)            Diff         intens. Ass.        Formula Bruta  Addotto     Accordo   Score    Picchi
+                    output.append([Comp.mass, Comp.MoC, float(spectra[find[0], 0]), find[1], float(spectra[find[0], 1]), Comp.mol, Comp.label, accordance, score, findedrate])
                 else:
                     pass                
             #else:

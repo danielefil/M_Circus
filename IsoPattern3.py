@@ -66,44 +66,12 @@ def generate_output(raw_weights, raw_ratios, charge: int):
     out = out[np.where(out[:,1] >= 0.00001)]
     return(out)
     
-#OLD
+
 # Funzione per effettuare un merge dei picchi del pattern isotopico se la loro differenza
 # in massa è inferiore al valore "soglia". Se la condizione è soddisfatta viene effettuata,
 # una media pesata per il valore di m/z e vengono sommate le intensità.
 
-#OLD
 # Merge del pattern isotopico, ma utilizzando la differenza in ppm
-'''
-def PatternFilter(input_array, mode, merge_threshold, ratio_threshold):
-    def wm(x): return np.average(x, weights=df.loc[x.index, "ints"])
-
-    if mode == 'ppm':
-        diff = np.absolute(np.diff(input_array[:, 0]))
-        mzdiff = diff * 1000000 / input_array[1:, 0]
-
-    elif mode == 'dalton':
-        mzdiff = np.diff(input_array[:, 0])
-
-
-    group = np.arange(0, 1)
-    group = np.append(group, (mzdiff >= merge_threshold).astype(int))
-    grupped = np.cumsum(group)
-    grupped = grupped + 1
-    input_array = np.vstack((grupped.T, input_array[:, 0], input_array[:, 1],)).T
-    df = pd.DataFrame(input_array, columns=['index', 'mz', 'ints'])
-    
-    ## OLD
-    #merged_pattern = df.groupby(['index']).agg(mz_weighted_mean=("mz", wm), ints=("ints", "sum")).to_numpy()
-    # considero solo il picco piu intenso dentro al range merg threshold 
-    merged_pattern = df.groupby(['index']).max().to_numpy()
-    merged_pattern = merged_pattern[np.where(merged_pattern[:, 1] >= ratio_threshold)]
-    
-    ### RINORMALIZZO DOPO AVER UNITO I PICCHI
-    merged_pattern[:, 1] /= merged_pattern[:, 1].max()
-
-    return(merged_pattern)
-'''
-
 
 def PatternFilter(input_array, merge_threshold, ratio_threshold):
     output_array = input_array
