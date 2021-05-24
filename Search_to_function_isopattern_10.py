@@ -169,7 +169,7 @@ def pattern_score(pattern_tbl: np.array):
                 _res = abs(sub[:,1].sum())
                 _accordance *= 1-_res
 
-    print('Score', _accordance * 100)
+    #print('Score', _accordance * 100)
 
 # SAVE PATTERN
 def SaveOutput(output_list, input_filepath, Diff):
@@ -230,7 +230,7 @@ def search_peak(spectra_path: str, database_path: str, adduct_list: list, charge
                 if find != None:
                     #print(spectra[find[0], 0])
                     if Comp.compound not in Iso_dict:
-                        Iso_dict[Comp.compound] = Patter_Calculator(Comp.compound, Comp.charge, .0005, .01)
+                        Iso_dict[Comp.compound] = Patter_Calculator(Comp.compound, Comp.charge, .0005, .001)
                     pattern_t = Iso_dict[Comp.compound]
                     # Find the isotopic pattern
                     accordance, pattern_tbl, findedrate = find_pattern(pattern_t, spectra, search_property[1], search_property[0])                    
