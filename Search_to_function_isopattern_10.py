@@ -119,7 +119,6 @@ def find_pattern(theo_pattern, spectra: np.array, _diff: int, search_mode: str):
     
     # Normalizzo il pattern isotopico solo se trovo dei picchi corrispondenti
     #if pattern_tbl[:, 1] != 0:
-    #print(pattern_tbl)
     pattern_tbl[:, 1] /= pattern_tbl[0, 1]
 
     findedpeaks = str(exp_p) + ' of ' + str(len(theo_pattern))

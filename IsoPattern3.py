@@ -88,10 +88,10 @@ def PatternFilter(input_array, merge_threshold, ratio_threshold):
     ### ELIMINO I PICCHI SOTTO SOGLIA DI INTENSITA
     output_array = output_array[np.where(output_array[:, 1] >= ratio_threshold)]
     ### RINORMALIZZO DOPO AVER UNITO I PICCHI
-    output_array[:, 1] /= output_array[:, 1].max()
+    #output_array[:, 1] /= output_array[:, 1].max()
     
-    output_array = output_array[output_array[:, 1].argsort()]
-    output_array = output_array[::-1]
+    #output_array = output_array[output_array[:, 1].argsort()]
+    #output_array = output_array[::-1]
     
     return output_array
 
