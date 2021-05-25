@@ -60,8 +60,8 @@ def generate_output(raw_weights, raw_ratios, charge: int):
     # Isotopic Patter Normalization 
     out[:, 1] /= out[:, 1].max()
     # Sorting on m/z small -> large
-    out = out[out[:, 0].argsort()]
-
+    out = out[out[:, 1].argsort()]
+    out = out[::-1]
     #elimino le intensita' minori di 0.00001 --> 10^-5 volte piu piccole rispetto al principale
     out = out[np.where(out[:,1] >= 0.00001)]
     return(out)
@@ -92,7 +92,7 @@ def PatternFilter(input_array, merge_threshold, ratio_threshold):
     
     #output_array = output_array[output_array[:, 1].argsort()]
     #output_array = output_array[::-1]
-    
+    print(output_array)
     return output_array
 
 
@@ -143,13 +143,7 @@ def Patter_Calculator(molecola: str, charge: int, merge_threshold, ratio_thresho
 
     New_Output = generate_output(raw_weights, raw_ratios, charge)
     Filtered = PatternFilter(New_Output, merge_threshold, ratio_threshold)  
-    '''
-    ## Ordino i picchi per valore di intensita' decrescente
-    New_Output = New_Output[np.where(New_Output[:, 1] >= ratio_threshold)]
-    New_Output = New_Output[New_Output[:, 1].argsort()]
-    New_Output = New_Output[::-1]
-    return New_Output
-    '''
+
     return Filtered
     
 ######################################
