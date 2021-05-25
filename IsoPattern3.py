@@ -92,7 +92,6 @@ def PatternFilter(input_array, merge_threshold, ratio_threshold):
     
     #output_array = output_array[output_array[:, 1].argsort()]
     #output_array = output_array[::-1]
-    print(output_array)
     return output_array
 
 

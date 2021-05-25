@@ -98,7 +98,6 @@ def diff(spectra, Cmp_MoC, thold, mode):
 def find_pattern(theo_pattern, spectra: np.array, _diff: int, search_mode: str):
     pattern_tbl = np.empty((0, 4), float)
     exp_p = 0
-    #print(theo_pattern)
     for iso_molecule in theo_pattern:
         if search_mode == 'ppm':
             find_iso = diff(spectra[:, 0], iso_molecule[0], _diff, 'ppm')
@@ -111,7 +110,6 @@ def find_pattern(theo_pattern, spectra: np.array, _diff: int, search_mode: str):
                   iso_molecule[0], iso_molecule[1]]
             pattern_tbl = np.vstack((pattern_tbl, np.array(ls)))
             ### Cancello dallo spettro il picco che ho trovato cosi non lo considero piu nel corso del calcolo del pattern isotopico
-            #print(spectra[find_iso[0]])
             spectra = np.delete(spectra, find_iso[0], axis=0)
         else:
             ls = [0, 0, iso_molecule[0], iso_molecule[1]]
@@ -121,7 +119,6 @@ def find_pattern(theo_pattern, spectra: np.array, _diff: int, search_mode: str):
     #if pattern_tbl[:, 1] != 0:
     #np.seterr(all='warn')
     pattern_tbl[:, 1] /= pattern_tbl[0, 1]
-    #print(pattern_tbl)
     #input('Press any key to continue...')
 
 
@@ -230,7 +227,6 @@ def search_peak(spectra_path: str, database_path: str, adduct_list: list, charge
                 # FIND 1 - Cerco i valori per i quali il ppm è minore di un valore
                 find = diff(spectra[:, 0], Comp.MoC, search_property[1], search_property[0])
                 if find != None:
-                    #print(spectra[find[0], 0])
                     if Comp.compound not in Iso_dict:
                         Iso_dict[Comp.compound] = Patter_Calculator(Comp.compound, Comp.charge, .0005, .001)
                     pattern_t = Iso_dict[Comp.compound]
