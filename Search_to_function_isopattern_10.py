@@ -1,9 +1,11 @@
+from Spectra_class import Spectra
 from mmap import ACCESS_COPY
 from Compound_class import Compound
 from pathlib import Path
 from scipy import optimize
 from collections import Counter
 from IsoPattern3 import Patter_Calculator
+from Spectra_class import Spectra
 import pandas as pd
 import numpy as np
 import itertools as it
@@ -217,7 +219,7 @@ def search_peak(spectra_path: str, database_path: str, adduct_list: list, charge
             df_sp = Apply_filterZ(df_sp, Filtering)
         
         spectra = np.round(df_sp.to_numpy(), 5)
-    
+        _spectra = Spectra(spectra)
         # Genero liste per gli output
         output = []
 
@@ -225,7 +227,7 @@ def search_peak(spectra_path: str, database_path: str, adduct_list: list, charge
         for Comp in CmpsToFind:
             if search_property[0] == 'ppm':
                 # FIND 1 - Cerco i valori per i quali il ppm è minore di un valore
-                find = diff(spectra[:, 0], Comp.MoC, search_property[1], search_property[0])
+                find = diff(_spectra.mz, Comp.MoC, search_property[1], search_property[0])
                 if find != None:
                     if Comp.compound not in Iso_dict:
                         Iso_dict[Comp.compound] = Patter_Calculator(Comp.compound, Comp.charge, .0005, .001)
@@ -234,7 +236,7 @@ def search_peak(spectra_path: str, database_path: str, adduct_list: list, charge
                     accordance, pattern_tbl, findedrate = find_pattern(pattern_t, spectra, search_property[1], search_property[0])                    
                     score = pattern_score(pattern_tbl)
                     #                 PM     m/z(teorico)    m/z(trovato)            Diff         intens. Ass.        Formula Bruta  Addotto     Accordo   Score    Picchi
-                    output.append([Comp.mass, Comp.MoC, float(spectra[find[0], 0]), find[1], float(spectra[find[0], 1]), Comp.mol, Comp.label, accordance, score, findedrate])
+                    output.append([Comp.mass, Comp.MoC, float(_spectra.mz[find[0]]), find[1], float(_spectra.int[find[0]]), Comp.mol, Comp.label, accordance, score, findedrate])
                 else:
                     pass
                     
@@ -249,7 +251,7 @@ def search_peak(spectra_path: str, database_path: str, adduct_list: list, charge
                     accordance, pattern_tbl, findedrate = find_pattern(pattern_t, spectra, search_property[1], search_property[0])
                     score = pattern_score(pattern_tbl)
                     #                 PM     m/z(teorico)    m/z(trovato)            Diff         intens. Ass.        Formula Bruta  Addotto     Accordo   Score    Picchi
-                    output.append([Comp.mass, Comp.MoC, float(spectra[find[0], 0]), find[1], float(spectra[find[0], 1]), Comp.mol, Comp.label, accordance, score, findedrate])
+                    output.append([Comp.mass, Comp.MoC, float(_spectra.mz[find[0]]), find[1], float(_spectra.int[find[0]]), Comp.mol, Comp.label, accordance, score, findedrate])
                 else:
                     pass                
             #else:
