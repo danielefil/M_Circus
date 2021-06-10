@@ -224,7 +224,8 @@ def search_peak(spectra_path: str, database_path: str, adduct_list: list, charge
         output = []
 
         
-        for Comp in CmpsToFind:
+        for ii, Comp in enumerate(CmpsToFind):
+            print(ii)
             if search_property[0] == 'ppm':
                 # FIND 1 - Cerco i valori per i quali il ppm è minore di un valore
                 find = diff(_spectra.mz, Comp.MoC, search_property[1], search_property[0])
